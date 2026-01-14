@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: bstore
+  datasource:
+    url: jdbc:postgresql://ep-nameless-union-agwyqtii-pooler.c-2.eu-central-1.aws.neon.tech/bstore?sslmode=require&channelBinding=require
+    username: neondb_owner
+    password: npg_kjYyx3OQ8IuR
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://logtoauth.bilalmancer.com/oidc
+server:
+  port: 8180
+
+security:
+  client:
+    id: 1f9b7c3a-4bcd-4f3a-bd4a-8d2e6b5c1234
+    secret: X4aH8vK9LqP1Zb9jF3rU2s9xYk1m2n3pQv4tR5u6V7w=
+
+  
+erpnext:
+  base-url: http://35.224.69.50/
+  token: token 67a52f3acd133c4:51e06e2427c7189
+
+stripe:
+  apiKey: ${STRIPE_SECRET_KEY}
+  webhook:
+    secret: ${STRIPE_WEBHOOK_KEY}
