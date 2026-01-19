@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,19 +28,69 @@ public class ErpNextController {
     @Autowired
     private ErpClientService erpClientService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('API_CLIENT')")
-    public ResponseEntity<String> getProducts(@RequestParam List<String> fields) {
 
+
+
+    @GetMapping("templates")
+    @PreAuthorize("hasRole('API_CLIENT')")
+    public ResponseEntity<String> getAlltemplates(
+        @RequestParam List<String> fields,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "20") int size
+    ){
         if (fields == null || fields.isEmpty()) {
             return ResponseEntity.badRequest().body("fields parameter is required");
         }
+
+        int limitStart = (page - 1) * size;
 
         String fieldsToString = fields.stream()
                 .map(tag -> "\"" + tag + "\"")
                 .collect(Collectors.joining(","));
 
-        return ResponseEntity.ok(erpNextClient.fetchProducts(fieldsToString));
+        return ResponseEntity.ok(erpNextClient.fetchTemplates(fieldsToString, size, limitStart));
+
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('API_CLIENT')")
+    public ResponseEntity<String> getProducts(
+            @RequestParam List<String> fields,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        if (fields == null || fields.isEmpty()) {
+            return ResponseEntity.badRequest().body("fields parameter is required");
+        }
+
+        int limitStart = (page - 1) * size;
+
+        String fieldsToString = fields.stream()
+                .map(tag -> "\"" + tag + "\"")
+                .collect(Collectors.joining(","));
+
+        return ResponseEntity.ok(erpNextClient.fetchProducts(fieldsToString, size, limitStart));
+    }
+
+    @GetMapping("/variants")
+    @PreAuthorize("hasRole('API_CLIENT')")
+    public ResponseEntity<String> getVariants(
+            @RequestParam List<String> fields,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam String templateName) {
+        if (fields == null || fields.isEmpty()) {
+            return ResponseEntity.badRequest().body("fields parameter is required");
+        }
+
+        int limitStart = (page - 1) * size;
+
+        String fieldsToString = fields.stream()
+                .map(tag -> "\"" + tag + "\"")
+                .collect(Collectors.joining(","));
+
+        return ResponseEntity.ok(erpNextClient.fetchVariants(templateName, fieldsToString, size, limitStart));
+
     }
 
     @GetMapping("/{id}")

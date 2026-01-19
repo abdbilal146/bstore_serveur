@@ -38,9 +38,47 @@ public class ERPNextClient {
                                 .build();
         }
 
-        public String fetchProducts(String fields) {
+        public String fetchProducts(String fields, int limit, int limitStart) {
                 return webClient.get()
-                                .uri("api/resource/Item?fields=[" + fields + "]")
+                                .uri(uriBuilder -> uriBuilder
+                                                .path("api/resource/Item")
+                                                .queryParam("fields", "[" + fields + "]")
+                                                .queryParam("limit", limit)
+                                                .queryParam("limit_start", limitStart)
+                                                .build())
+                                .retrieve()
+                                .bodyToMono(String.class)
+                                .block();
+        }
+
+        public String fetchTemplates(String fields, int limit, int limitStart){
+                return webClient.get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path("api/resource/Item")
+                                .queryParam(
+                                        "filters",
+                                        "[[\"has_variants\",\"=\",1],[\"variant_of\",\"is\",\"not set\"]]"
+                                )
+                                .queryParam("fields", "[" + fields + "]")
+                                .queryParam("limit", limit)
+                                .queryParam("limit_start", limitStart)
+                                .build()
+                        )
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+        }
+
+        public String fetchVariants(String templateName, String variantFields, int limit, int limitStart) {
+                return webClient.get()
+                                .uri(uriBuilder -> uriBuilder
+                                                .path("api/resource/Item")
+                                                .queryParam("filters",
+                                                                "[[\"variant_of\",\"=\",\"" + templateName + "\"]]")
+                                                .queryParam("fields", "[" + variantFields + "]")
+                                                .queryParam("limit", limit)
+                                                .queryParam("limit_start", limitStart)
+                                                .build())
                                 .retrieve()
                                 .bodyToMono(String.class)
                                 .block();
