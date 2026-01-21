@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.mancer.bstore.client.ERPNextClient;
 
@@ -44,8 +45,15 @@ public class ErpClientService {
         }
     }
 
-    public Boolean isCustomerExist() {
-        String response = erpNextClient.getCostumerById("");
-        return !response.isEmpty();
+    public boolean isCustomerExist(String customerName) {
+        try {
+            String res = erpNextClient.getCostumerById(customerName);
+            return res != null && !res.isEmpty();
+        } catch (WebClientResponseException.NotFound e) {
+            return false;
+        } catch (Exception e) {
+            System.err.println("Erreur critique vérification client: " + e.getMessage());
+            throw new RuntimeException("Impossible de vérifier l'existence du client", e);
+        }
     }
 }

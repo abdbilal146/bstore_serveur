@@ -106,9 +106,24 @@ public class WebhookController {
             Address address = new Address();
             address.setFullName(session.getMetadata().get("fullName"));
 
-            // add customer to erp next
-            if (!erpClientService.isCustomerExist()) {
-                erpNextClient.addCustomer(userId, address);
+          
+            boolean exists = false;
+            try {
+                exists = erpClientService.isCustomerExist(userId);
+            } catch (Exception e) {
+               
+            }
+
+            if (!exists) {
+                try {
+                    erpNextClient.addCustomer(userId, address);
+                } catch (Exception e) {
+                    if (e.getMessage().contains("Duplicate") || e.getMessage().contains("1062")) {
+                        System.out.println("Le client existait déjà (concurrence ou erreur check), on continue.");
+                    } else {
+                        throw e; 
+                    }
+                }
             }
             // add address of teh customler to the erp
 

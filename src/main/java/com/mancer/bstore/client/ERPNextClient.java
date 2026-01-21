@@ -93,7 +93,8 @@ public class ERPNextClient {
         }
 
         public String addCustomer(String userId, Address address) {
-                String body = "{"
+                try{
+                        String body = "{"
                                 + "\"name\": \"" + userId + "\","
                                 + "\"customer_name\": \"" + address.getFullName() + "\","
                                 + "\"customer_group\": \"All Customer Groups\","
@@ -108,6 +109,12 @@ public class ERPNextClient {
                                 .retrieve()
                                 .bodyToMono(String.class)
                                 .block();
+                }catch (WebClientResponseException e) {
+
+                        System.err.println("ERPNext Error: " + e.getResponseBodyAsString());
+                        throw new RuntimeException("Failed to add new Customer: " + e.getResponseBodyAsString());
+                }
+                
 
         }
 
@@ -147,11 +154,18 @@ public class ERPNextClient {
         }
 
         public String getCostumerById(String userId) {
-                return webClient.get()
+                try{
+                        return webClient.get()
                                 .uri("api/resource/" + userId)
                                 .retrieve()
                                 .bodyToMono(String.class)
                                 .block();
+                }catch(WebClientResponseException e) {
+
+                        System.err.println("ERPNext Error: " + e.getResponseBodyAsString());
+                        throw new RuntimeException("Failed to getCustomer By Id: " + e.getResponseBodyAsString());
+                }
+                
         }
 
         // this method to add Ordes
@@ -170,7 +184,7 @@ public class ERPNextClient {
                         requestBody.put("name", orderId);
                         requestBody.put("customer", userId);
                         requestBody.put("transaction_date", LocalDate.now().toString());
-                        requestBody.put("delivery_date", "2026-01-20");
+                        requestBody.put("delivery_date", LocalDate.now().plusDays(3).toString());
                         requestBody.put("order_type", "Sales");
                         requestBody.put("selling_price_list", "Standard Selling");
                         requestBody.put("currency", "EUR");
