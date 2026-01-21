@@ -17,6 +17,12 @@ public class PaymentService {
         @Value("${stripe.apiKey}")
         private String stripeApiKey;
 
+        @Value("${stripe.successUrl}")
+        private String successUrl;
+
+        @Value("${stripe.cancelUrl}")
+        private String cancelUrl;
+
         public PaymentIntent createPayment(BigDecimal amount, String paymentMethodId, String userId, Long cartId,
                         Address address)
                         throws Exception {
@@ -25,8 +31,8 @@ public class PaymentService {
 
                 SessionCreateParams params = SessionCreateParams.builder()
                                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                                .setSuccessUrl("http://localhost:5173/checkout/success?session_id={CHECKOUT_SESSION_ID}")
-                                .setCancelUrl("http://localhost:5173/checkout/cancel")
+                                .setSuccessUrl(successUrl)
+                                .setCancelUrl(cancelUrl)
                                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                                 .putMetadata("userId", userId)
                                 .putMetadata("cartId", String.valueOf(cartId))
