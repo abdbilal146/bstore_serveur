@@ -81,7 +81,7 @@ public class CheckoutService {
     private BigDecimal calculateShipping(String method) {
         return switch (method) {
             case "EXPRESS" -> new BigDecimal("15.00");
-            default -> new BigDecimal("4.99");
+            default -> new BigDecimal("0.00");
         };
     }
 
