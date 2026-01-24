@@ -44,8 +44,10 @@ public class WishlistController {
         wishlist.setUserId(userId);
         wishlist.setProductId(wishlistModel.getProductId());
         wishlist.setImage(wishlistModel.getImage());
+        wishlist.setProductName(wishlistModel.getProductName());
+        wishlist.setProductPrice(wishlistModel.getProductPrice());
 
-        wishlistRepository.save(wishlist);
+        wishlistRepository.save(wishlist); 
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Item has been created");
 

@@ -1,5 +1,6 @@
 package com.mancer.bstore.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,10 @@ public class WishlistModel {
 
     @Column(nullable = false)
     private String productId;
+
+    private String productName;
+
+    private BigDecimal productPrice = BigDecimal.ZERO;
 
     @Column
     private String image;
